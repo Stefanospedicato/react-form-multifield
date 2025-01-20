@@ -5,29 +5,49 @@ const list = [
   { id: 2, text: "Articolo 2" },
 ];
 
+const tags = [
+  { id: 1, name: "Tecnologia" },
+  { id: 2, name: "Scienza" },
+  { id: 3, name: "Arte" },
+  { id: 4, name: "Musica" },
+  { id: 5, name: "Sport" },
+  { id: 6, name: "Cucina" },
+  { id: 7, name: "Viaggi" },
+  { id: 8, name: "Letteratura" },
+];
+
 const Form = () => {
   const [myList, setMyList] = useState(list);
   const [newTask, setNewTask] = useState({
     text: "",
-    img: "",
+    image: "",
     content: "",
     category: "",
     tags: [],
-    checked: false,
+    published: false,
   });
 
   const handlerSubmit = (e) => {
     e.preventDefault();
-    setMyList([...myList, newTask]);
+    setMyList([...myList, { ...newTask, id: Date.now() }]);
+    setNewTask({
+      text: "",
+      image: "",
+      content: "",
+      category: "",
+      tags: [],
+      published: false,
+    });
   };
 
   const handlerNewTask = (e) => {
-    const newTask = {
-      id: Date.now(),
-      text: e.target.value,
-    };
-    setNewTask(newTask);
+    const { name, value, type, checked } = e.target;
+    setNewTask((prevTask) => ({
+      ...prevTask,
+      [name]: type === "checkbox" ? checked : value,
+    }));
   };
+
   const handlerRemove = (id) => {
     const newList = myList.filter((item) => item.id !== id);
     setMyList(newList);
@@ -40,15 +60,85 @@ const Form = () => {
           <div className="input-group">
             <input
               type="text"
-              className="form-control"
-              placeholder="Scrivi titolo da aggiungere..."
+              className="form-control my-2"
+              placeholder="Scrivi il titolo dell'articolo..."
+              name="text"
               value={newTask.text}
               onChange={handlerNewTask}
             />
-            <button className="btn btn-outline-secondary" type="submit">
-              Aggiungi
-            </button>
           </div>
+          <div className="input-group">
+            <input
+              type="text"
+              className="form-control my-2"
+              placeholder="URL immagine..."
+              name="image"
+              value={newTask.image}
+              onChange={handlerNewTask}
+            />
+          </div>
+          <div className="input-group">
+            <textarea
+              className="form-control my-2"
+              placeholder="Contenuto..."
+              name="content"
+              value={newTask.content}
+              onChange={handlerNewTask}
+            />
+          </div>
+          <div className="input-group">
+            <select
+              className="form-control my-2"
+              name="category"
+              value={newTask.category}
+              onChange={handlerNewTask}
+            >
+              <option value="">Seleziona categoria...</option>
+              <option value="Cronaca">Cronaca</option>
+              <option value="Sport">Sport</option>
+              <option value="Moda">Moda</option>
+              <option value="Botanica">Botanica</option>
+              <option value="Animali">Animali</option>
+            </select>
+          </div>
+          <div className="input-group">
+            {tags.map((tag) => (
+              <label>
+                <input
+                  type="checkbox"
+                  name="tags"
+                  className="m-3"
+                  value={tag.id}
+                  checked={newTask.tags.includes(tag.id)}
+                  onChange={(e) => {
+                    const { checked, value } = e.target;
+                    setNewTask((prevTask) => ({
+                      ...prevTask,
+                      tags: checked
+                        ? [...prevTask.tags, value]
+                        : prevTask.tags.filter((tag) => tag !== value),
+                    }));
+                  }}
+                />
+                {tag.name}
+              </label>
+            ))}
+          </div>
+          <div className="input-group">
+            <label>
+              <input
+                type="checkbox"
+                name="published"
+                className="m-3"
+                checked={newTask.published}
+                onChange={handlerNewTask}
+              />
+              Pubblicato
+            </label>
+          </div>
+          <button className="btn btn-outline-secondary my-3" type="submit">
+            Aggiungi
+          </button>
         </form>
       </div>
       <div className="container">
@@ -56,9 +146,13 @@ const Form = () => {
           {myList.map((task) => (
             <li
               key={task.id}
-              className="list-group-item  d-flex justify-content-between"
+              className="list-group-item d-flex justify-content-between"
             >
-              {task.text}
+              <div>Titolo: {task.text}</div>
+              <div>Categoria: {task.category}</div>
+              <div>Articolo: {task.content}</div>
+              <div>Tags: {task.tags}</div>
+              <div>Immagine: {task.img}</div>
               <i
                 className="fa-solid fa-trash"
                 onClick={() => handlerRemove(task.id)}
