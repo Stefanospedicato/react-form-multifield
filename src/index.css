@@ -3,4 +3,8 @@
   &:hover{
     color: red;
   }
+} 
+
+.flex-column div,h2{
+  margin: 20px;
 }

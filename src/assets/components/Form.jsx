@@ -1,9 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-const list = [
-  { id: 1, text: "Articolo 1" },
-  { id: 2, text: "Articolo 2" },
-];
+const list = [];
 
 const tags = [
   { id: 1, name: "Tecnologia" },
@@ -26,6 +23,12 @@ const Form = () => {
     tags: [],
     published: false,
   });
+
+  useEffect(() => {
+    if (newTask.published) {
+      alert("Articolo pubblicato!");
+    }
+  }, [newTask.published]);
 
   const handlerSubmit = (e) => {
     e.preventDefault();
@@ -103,7 +106,7 @@ const Form = () => {
           </div>
           <div className="input-group">
             {tags.map((tag) => (
-              <label>
+              <label key={tag.id}>
                 <input
                   type="checkbox"
                   name="tags"
@@ -115,8 +118,10 @@ const Form = () => {
                     setNewTask((prevTask) => ({
                       ...prevTask,
                       tags: checked
-                        ? [...prevTask.tags, value]
-                        : prevTask.tags.filter((tag) => tag !== value),
+                        ? [...prevTask.tags, parseInt(value, 10)]
+                        : prevTask.tags.filter(
+                            (tag) => tag !== parseInt(value, 10)
+                          ),
                     }));
                   }}
                 />
@@ -136,7 +141,7 @@ const Form = () => {
               Pubblicato
             </label>
           </div>
-          <button className="btn btn-outline-secondary my-3" type="submit">
+          <button className="btn btn-primary my-3" type="submit">
             Aggiungi
           </button>
         </form>
@@ -148,11 +153,16 @@ const Form = () => {
               key={task.id}
               className="list-group-item d-flex justify-content-between"
             >
-              <div>Titolo: {task.text}</div>
-              <div>Categoria: {task.category}</div>
-              <div>Articolo: {task.content}</div>
-              <div>Tags: {task.tags}</div>
-              <div>Immagine: {task.img}</div>
+              <div className="flex-column">
+                <h2>Titolo: {task.text}</h2>
+                <div>Categoria: {task.category}</div>
+                <div>Articolo: {task.content}</div>
+                <div>Tags: {task.tags}</div>
+                <div>
+                  Immagine: <img src={task.image} alt="immagine articolo" />
+                </div>
+                <div>Pubblicato: {task.published ? "Si" : "No"} </div>
+              </div>
               <i
                 className="fa-solid fa-trash"
                 onClick={() => handlerRemove(task.id)}
