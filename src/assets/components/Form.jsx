@@ -7,7 +7,14 @@ const list = [
 
 const Form = () => {
   const [myList, setMyList] = useState(list);
-  const [newTask, setNewTask] = useState({ text: "" });
+  const [newTask, setNewTask] = useState({
+    text: "",
+    img: "",
+    content: "",
+    category: "",
+    tags: [],
+    checked: false,
+  });
 
   const handlerSubmit = (e) => {
     e.preventDefault();
