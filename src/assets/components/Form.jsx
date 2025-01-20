@@ -13,16 +13,18 @@ const tags = [
   { id: 8, name: "Letteratura" },
 ];
 
+const defaultTask = {
+  text: "",
+  image: "",
+  content: "",
+  category: "",
+  tags: [],
+  published: false,
+};
+
 const Form = () => {
   const [myList, setMyList] = useState(list);
-  const [newTask, setNewTask] = useState({
-    text: "",
-    image: "",
-    content: "",
-    category: "",
-    tags: [],
-    published: false,
-  });
+  const [newTask, setNewTask] = useState(defaultTask);
 
   useEffect(() => {
     if (newTask.published) {
@@ -33,14 +35,7 @@ const Form = () => {
   const handlerSubmit = (e) => {
     e.preventDefault();
     setMyList([...myList, { ...newTask, id: Date.now() }]);
-    setNewTask({
-      text: "",
-      image: "",
-      content: "",
-      category: "",
-      tags: [],
-      published: false,
-    });
+    setNewTask(defaultTask);
   };
 
   const handlerNewTask = (e) => {
