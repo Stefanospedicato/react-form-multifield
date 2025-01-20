@@ -2,6 +2,15 @@ import { useEffect, useState } from "react";
 
 const list = [];
 
+const categorie = [
+  "Seleziona categoria...",
+  "Cronaca",
+  "Sport",
+  "Moda",
+  "Botanica",
+  "Animali",
+];
+
 const tags = [
   { id: 1, name: "Tecnologia" },
   { id: 2, name: "Scienza" },
@@ -28,20 +37,20 @@ const Form = () => {
 
   useEffect(() => {
     if (newTask.published) {
-      alert("Articolo pubblicato!");
+      alert("ATTENZIONE: L'articolo verrà pubblicato");
     }
   }, [newTask.published]);
 
   const handlerSubmit = (e) => {
     e.preventDefault();
-    setMyList([...myList, { ...newTask, id: Date.now() }]);
+    setMyList([newTask, ...myList]);
     setNewTask(defaultTask);
   };
 
   const handlerNewTask = (e) => {
     const { name, value, type, checked } = e.target;
-    setNewTask((prevTask) => ({
-      ...prevTask,
+    setNewTask((task) => ({
+      ...task,
       [name]: type === "checkbox" ? checked : value,
     }));
   };
@@ -65,6 +74,7 @@ const Form = () => {
               onChange={handlerNewTask}
             />
           </div>
+
           <div className="input-group">
             <input
               type="text"
@@ -75,6 +85,7 @@ const Form = () => {
               onChange={handlerNewTask}
             />
           </div>
+
           <div className="input-group">
             <textarea
               className="form-control my-2"
@@ -84,6 +95,7 @@ const Form = () => {
               onChange={handlerNewTask}
             />
           </div>
+
           <div className="input-group">
             <select
               className="form-control my-2"
@@ -91,14 +103,12 @@ const Form = () => {
               value={newTask.category}
               onChange={handlerNewTask}
             >
-              <option value="">Seleziona categoria...</option>
-              <option value="Cronaca">Cronaca</option>
-              <option value="Sport">Sport</option>
-              <option value="Moda">Moda</option>
-              <option value="Botanica">Botanica</option>
-              <option value="Animali">Animali</option>
+              {categorie.map((cat) => (
+                <option value={cat}>{cat}</option>
+              ))}
             </select>
           </div>
+
           <div className="input-group">
             {tags.map((tag) => (
               <label key={tag.id}>
@@ -110,11 +120,11 @@ const Form = () => {
                   checked={newTask.tags.includes(tag.id)}
                   onChange={(e) => {
                     const { checked, value } = e.target;
-                    setNewTask((prevTask) => ({
-                      ...prevTask,
+                    setNewTask((task) => ({
+                      ...task,
                       tags: checked
-                        ? [...prevTask.tags, parseInt(value, 10)]
-                        : prevTask.tags.filter(
+                        ? [...task.tags, parseInt(value, 10)]
+                        : task.tags.filter(
                             (tag) => tag !== parseInt(value, 10)
                           ),
                     }));
@@ -124,6 +134,7 @@ const Form = () => {
               </label>
             ))}
           </div>
+
           <div className="input-group">
             <label>
               <input
@@ -136,11 +147,13 @@ const Form = () => {
               Pubblicato
             </label>
           </div>
+
           <button className="btn btn-primary my-3" type="submit">
             Aggiungi
           </button>
         </form>
       </div>
+
       <div className="container">
         <ul className="list-group">
           {myList.map((task) => (
@@ -152,11 +165,19 @@ const Form = () => {
                 <h2>Titolo: {task.text}</h2>
                 <div>Categoria: {task.category}</div>
                 <div>Articolo: {task.content}</div>
-                <div>Tags: {task.tags}</div>
+                <div>
+                  Tags:{" "}
+                  {task.tags
+                    .map((tagId) => tags.find((tag) => tag.id === tagId)?.name)
+                    .join(", ")}
+                </div>
                 <div>
                   Immagine: <img src={task.image} alt="immagine articolo" />
                 </div>
-                <div>Pubblicato: {task.published ? "Si" : "No"} </div>
+                <div>
+                  Pubblico:{" "}
+                  {task.published ? "PUBBLICO" : "Articolo non pubblico"}{" "}
+                </div>
               </div>
               <i
                 className="fa-solid fa-trash"

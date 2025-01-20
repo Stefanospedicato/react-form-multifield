@@ -8,3 +8,8 @@
 .flex-column div,h2{
   margin: 20px;
 }
+
+h2{
+  color: lightcoral;
+  text-transform: uppercase;
+}
